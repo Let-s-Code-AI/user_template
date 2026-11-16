@@ -68,7 +68,7 @@ Testów nie ma. Weryfikacją jest `fmt` + `validate` + `plan`.
   całego polecenia, więc daje fałszywe alarmy, gdy takie słowa są w treści heredoca. `tf-check.sh` (PostToolUse)
   robi `fmt` + `validate` po edycji `.tf` (wymaga `jq` i wcześniejszego `terraform init`).
 - `/plan-review` uruchamia `terraform plan` i przekazuje wynik subagentowi `tf-reviewer` (tylko odczyt).
-- CI: `ci.yaml` (fmt + validate na PR/push do `main`). `cd.yaml` uruchamiany ręcznie (plan, potem apply
+- CI: `ci.yaml` (fmt + validate oraz job `trivy config` dla HIGH/CRITICAL, na razie tylko raportujący, na PR/push do `main`). `cd.yaml` uruchamiany ręcznie (plan, potem apply
   za zatwierdzeniem w środowisku `production`).
 - `INSTRUKCJE.md` to instrukcja dla kursanta (setup, zasady, typowe błędy). Przy zmianie zasad demo aktualizuj
   ją razem z tym plikiem i z `.claude/agents/tf-reviewer.md` (ten dopuszcza więcej rozmiarów VM niż `Standard_B1s`

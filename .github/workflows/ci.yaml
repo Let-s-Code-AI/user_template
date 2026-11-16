@@ -26,3 +26,18 @@ jobs:
 
       - name: Validate
         run: terraform validate
+
+  trivy:
+    name: trivy config
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Akcja przypięta do SHA commita (v0.36.0), nie do taga: tagi da się przesunąć.
+      - uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25
+        with:
+          scan-type: config
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          # Na razie tylko raport. Zmień na "1", żeby znaleziska blokowały PR.
+          exit-code: "0"
