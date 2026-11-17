@@ -51,7 +51,9 @@ Testów nie ma. Weryfikacją jest `fmt` + `validate` + `plan`.
 
 ## Architektura
 
-- Płaski root module, bez podmodułów i bez zdalnego backendu (stan lokalny). Zasoby są podzielone na pliki
+- Płaski root module, bez podmodułów i bez zdalnego backendu. `terraform.tfstate` jest **commitowany do repo**
+  (po każdym apply, także nieudanym, commituje go job `cd.yaml` z `[skip ci]`). Lokalny `apply` też zmienia ten
+  plik, więc nie mieszaj apply lokalnego z apply w CD bez zsynchronizowania stanu (`git pull`). Zasoby są podzielone na pliki
   tematyczne: `network.tf`, `security.tf` (`random_string.suffix`), `monitoring.tf` (action group; alert
   na usunięcie RG to zadanie dla kursantów), `main.tf` (`data` RG + output). Zmienne są w `variables.tf`, a `alert_email` w `monitoring.tf`.
 - Pliki `*.disabled` (`vm.tf.disabled`, `storage.tf.disabled`) to gotowe, wyłączone przykłady ćwiczeń
@@ -69,7 +71,8 @@ Testów nie ma. Weryfikacją jest `fmt` + `validate` + `plan`.
   robi `fmt` + `validate` po edycji `.tf` (wymaga `jq` i wcześniejszego `terraform init`).
 - `/plan-review` uruchamia `terraform plan` i przekazuje wynik subagentowi `tf-reviewer` (tylko odczyt).
 - CI: `ci.yaml` (fmt + validate na PR/push do `main`). `cd.yaml` uruchamiany ręcznie (plan, potem apply
-  za zatwierdzeniem w środowisku `production`).
-- `INSTRUKCJE.md` to instrukcja dla kursanta (setup, zasady, typowe błędy). Przy zmianie zasad demo aktualizuj
-  ją razem z tym plikiem i z `.claude/agents/tf-reviewer.md` (ten dopuszcza więcej rozmiarów VM niż `Standard_B1s`
+  za zatwierdzeniem w środowisku `production`). `codex-review.yaml` robi review PR przez Codex (wymaga sekretu
+  `OPENAI_API_KEY`, bez niego się pomija) i traktuje **ten plik** jako źródło zasad demo.
+- `INSTRUKCJE.md` to instrukcja dla kursanta (setup, zasady, typowe błędy), a `README.md` to skrót struktury repo.
+  Przy zmianie zasad demo aktualizuj je razem z tym plikiem i z `.claude/agents/tf-reviewer.md` (ten dopuszcza więcej rozmiarów VM niż `Standard_B1s`
   i nie wymienia Front Door/CDN).
