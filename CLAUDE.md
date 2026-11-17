@@ -35,6 +35,11 @@ zapisuj do plików.
 4. `terraform apply` **bez** `-auto-approve`. Użytkownik zatwierdza go sam.
 5. Zweryfikuj wynik (`terraform output`, `az resource list -g $TF_VAR_resource_group_name -o table`).
 
+Commity piszesz w formacie [Conventional Commits](https://www.conventionalcommits.org/): `typ(scope): opis`,
+np. `feat(storage): kontener na logi` albo `docs: plan storage account`. Typy: `feat`, `fix`, `docs`, `refactor`,
+`chore`, `ci`. Scope (opcjonalny) to obszar, np. `storage`, `network`, `monitoring`. Opis po polsku, w trybie
+rozkazującym lub bezosobowo, bez kropki na końcu. Zmianę łamiącą oznaczasz `!` (`feat(network)!: …`).
+
 Odpowiadaj po polsku, zwięźle.
 
 ## Komendy
