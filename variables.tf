@@ -8,3 +8,14 @@ variable "location" {
   type        = string
   default     = "westeurope"
 }
+
+variable "log_retention_days" {
+  description = "Po ilu dniach od modyfikacji usuwać bloby z kontenera logs."
+  type        = number
+  default     = 30
+
+  validation {
+    condition     = var.log_retention_days >= 1
+    error_message = "log_retention_days musi wynosić co najmniej 1."
+  }
+}
