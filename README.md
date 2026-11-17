@@ -1,52 +1,52 @@
-# Terraform + Claude Code na Azure — szablon kursanta
+# Terraform + Claude Code on Azure — student template
 
-Szablon do ćwiczeń z Terraforma na Azure z pomocą Claude Code. Każdy kursant pracuje
-we własnej, już istniejącej grupie zasobów i ma uprawnienia Contributor tylko do niej.
+A template for Terraform exercises on Azure with the help of Claude Code. Each student works
+in their own, already existing resource group and has Contributor permissions on it only.
 
-**Zacznij od [INSTRUKCJE.md](INSTRUKCJE.md)** — setup krok po kroku, zasady demo i typowe błędy.
+**Start with [INSTRUKCJE.md](INSTRUKCJE.md)** (in Polish) — step-by-step setup, demo rules and common errors.
 
-## Szybki start
+## Quick start
 
 ```bash
-source ~/.tf-training/studentNN.env   # w każdym nowym terminalu
-./scripts/login.sh                    # opcjonalnie: az login (do `az resource list`)
+source ~/.tf-training/studentNN.env   # in every new terminal
+./scripts/login.sh                    # optional: az login (for `az resource list`)
 terraform init
 claude
 ```
 
-## Struktura
+## Structure
 
-| Plik | Zawartość |
+| File | Contents |
 |---|---|
-| `providers.tf` | Provider `azurerm` (`resource_provider_registrations = "none"`) |
+| `providers.tf` | `azurerm` provider (`resource_provider_registrations = "none"`) |
 | `main.tf` | `data "azurerm_resource_group" "main"` + output |
-| `variables.tf` | `resource_group_name`, `location` (z `TF_VAR_*`) |
-| `network.tf` | Prywatna strefa DNS |
-| `security.tf` | `random_string.suffix` do globalnie unikalnych nazw |
-| `monitoring.tf` | Action group (`alert_email`); alert na usunięcie RG to zadanie |
-| `outputs.tf` | Miejsce na outputy |
-| `vm.tf.disabled` | Ćwiczenie: VM nginx `Standard_B1s` z własnym VNet/NSG |
-| `storage.tf.disabled` | Ćwiczenie: storage account |
-| `scripts/login.sh` | Logowanie `az` jako service principal kursanta |
+| `variables.tf` | `resource_group_name`, `location` (from `TF_VAR_*`) |
+| `network.tf` | Private DNS zone |
+| `security.tf` | `random_string.suffix` for globally unique names |
+| `monitoring.tf` | Action group (`alert_email`); the RG deletion alert is an exercise |
+| `outputs.tf` | Place for outputs |
+| `vm.tf.disabled` | Exercise: nginx VM `Standard_B1s` with its own VNet/NSG |
+| `storage.tf.disabled` | Exercise: storage account |
+| `scripts/login.sh` | Logs `az` in as the student's service principal |
 
-Pliki `*.disabled` włączasz, usuwając rozszerzenie. Pamiętaj: **maksymalnie 1 VM naraz**.
+Enable the `*.disabled` files by removing the extension. Remember: **at most 1 VM at a time**.
 
-## Praca z Claude Code
+## Working with Claude Code
 
-- `.claude/settings.json` — allowlista komend read-only; `apply`/`destroy` wymagają zgody.
-- Hooki: `fmt` + `validate` po każdej edycji `.tf`; blokada `-auto-approve`.
-- `/plan-review` — `terraform plan` + recenzja przez subagenta `tf-reviewer`.
-- `CLAUDE.md` — zasady demo dla agenta.
+- `.claude/settings.json` — allowlist of read-only commands; `apply`/`destroy` require approval.
+- Hooks: `fmt` + `validate` after every `.tf` edit; `-auto-approve` is blocked.
+- `/plan-review` — `terraform plan` + a review by the `tf-reviewer` subagent.
+- `CLAUDE.md` — demo rules for the agent.
 
 ## CI/CD
 
-- `ci.yaml` — `fmt` + `validate` na PR i push do `main`.
-- `cd.yaml` — uruchamiany ręcznie: plan, potem apply po zatwierdzeniu w środowisku `production`.
-- `codex-review.yaml` — automatyczny przegląd PR.
+- `ci.yaml` — `fmt` + `validate` on PRs and pushes to `main`.
+- `cd.yaml` — triggered manually: plan, then apply after approval in the `production` environment.
+- `codex-review.yaml` — automated PR review.
 
-## Weryfikacja
+## Verification
 
-Testów nie ma. Sprawdzeniem jest:
+There are no tests. The check is:
 
 ```bash
 terraform fmt -check -recursive -diff && terraform validate && terraform plan
